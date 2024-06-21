@@ -50,7 +50,7 @@ spec:
                         type: string
                       path:
                         type: string
-                      resourceType:
+                      resourceDelta:
                         type: integer
                       tenantId:
                         type: string
@@ -61,7 +61,7 @@ spec:
                     - clientId
                     - clientSecret
                     - path
-                    - resourceType
+                    - resourceDelta
                     - tenantId
                     type: object
                 type: object
