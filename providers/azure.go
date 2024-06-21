@@ -20,7 +20,7 @@ type Azure struct {
 	ClientSecret string `json:"clientSecret"`
 
 	Path          string `json:"path"`
-	ResourceDelta int    `json:"resourceType"`
+	ResourceDelta int    `json:"resourceDelta"`
 	Action        string `json:"action"`
 
 	// +optional
