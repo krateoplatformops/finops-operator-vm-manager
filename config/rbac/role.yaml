@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: manager-role
+  namespace: finops
+rules:
+- apiGroups:
+  - finops.krateo.io
+  resources:
+  - configmanagervms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - finops.krateo.io
+  resources:
+  - configmanagervms/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - finops.krateo.io
+  resources:
+  - configmanagervms/status
+  verbs:
+  - get
+  - patch
+  - update

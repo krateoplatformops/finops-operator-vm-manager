@@ -1,0 +1,27 @@
+# permissions for end users to view configmanagervms.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: configmanagervm-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: finops-operator-vm-manager
+    app.kubernetes.io/part-of: finops-operator-vm-manager
+    app.kubernetes.io/managed-by: kustomize
+  name: configmanagervm-viewer-role
+rules:
+- apiGroups:
+  - finops.krateo.io
+  resources:
+  - configmanagervms
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - finops.krateo.io
+  resources:
+  - configmanagervms/status
+  verbs:
+  - get
