@@ -17,7 +17,7 @@ limitations under the License.
 package v1
 
 import (
-	"github.com/krateoplatformops/finops-operator-vm-manager/internal/providers"
+	"github.com/krateoplatformops/finops-operator-vm-manager/providers"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
