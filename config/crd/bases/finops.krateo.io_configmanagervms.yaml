@@ -51,7 +51,7 @@ spec:
                       path:
                         type: string
                       resourceType:
-                        type: string
+                        type: integer
                       tenantId:
                         type: string
                       token:
