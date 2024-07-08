@@ -62,10 +62,6 @@ func (r *ConfigManagerVMReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 	switch configManagerVM.Spec.ResourceProvider {
 	case "azure":
-		err = configManagerVM.Spec.ProviderSpecificResources.AzureLogin.Connect()
-		if err != nil {
-			return ctrl.Result{}, err
-		}
 		err = configManagerVM.Spec.ProviderSpecificResources.AzureLogin.SetResourceStatus()
 		if err != nil {
 			return ctrl.Result{}, err

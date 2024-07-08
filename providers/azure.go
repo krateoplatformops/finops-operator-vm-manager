@@ -2,60 +2,45 @@ package providers
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
+
+	operatorExporterPackage "github.com/krateoplatformops/finops-operator-exporter/api/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 const azureRestPath = "https://management.azure.com/"
 
 type Azure struct {
-	TenantID     string `json:"tenantId"`
-	ClientID     string `json:"clientId"`
-	ClientSecret string `json:"clientSecret"`
+	TokenRef operatorExporterPackage.ObjectRef `json:"tokenRef"`
 
 	Path          string `json:"path"`
 	ResourceDelta int    `json:"resourceDelta"`
 	Action        string `json:"action"`
 
 	// +optional
-	Token string `json:"token,omitempty"`
+	Token string `json:"token"`
 }
 
 func (c *Azure) Connect() error {
-	urlToken := fmt.Sprintf("https://login.microsoftonline.com/%s/oauth2/token", c.TenantID)
-
-	// Set up the form values
-	data := url.Values{}
-	data.Set("client_id", c.ClientID)
-	data.Set("resource", "https://management.azure.com/")
-	data.Set("client_secret", c.ClientSecret)
-	data.Set("grant_type", "client_credentials")
-
-	req, err := http.NewRequest("POST", urlToken, bytes.NewBufferString(data.Encode()))
+	clientset, err := GetClientSet()
 	if err != nil {
 		return err
 	}
 
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-	resp, err := http.DefaultClient.Do(req)
+	data, err := clientset.CoreV1().Secrets(c.TokenRef.Namespace).Get(context.TODO(), c.TokenRef.Name, v1.GetOptions{})
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
-
-	// Read and parse the response
-	responseBody, _ := io.ReadAll(resp.Body)
-	var result map[string]interface{}
-	json.Unmarshal(responseBody, &result)
-
-	c.Token = result["access_token"].(string)
+	c.Token = string(data.Data["bearer-token"])
 	return nil
 }
 
@@ -207,4 +192,20 @@ type VMSize struct {
 	Name          string `json:"name"`
 	NumberOfCores int    `json:"numberOfCores"`
 	MemoryInMB    int    `json:"memoryInMB"`
+}
+
+func GetClientSet() (*kubernetes.Clientset, error) {
+	inClusterConfig, err := rest.InClusterConfig()
+	if err != nil {
+		return &kubernetes.Clientset{}, err
+	}
+
+	inClusterConfig.APIPath = "/apis"
+	inClusterConfig.GroupVersion = &operatorExporterPackage.GroupVersion
+
+	clientset, err := kubernetes.NewForConfig(inClusterConfig)
+	if err != nil {
+		return &kubernetes.Clientset{}, err
+	}
+	return clientset, nil
 }
