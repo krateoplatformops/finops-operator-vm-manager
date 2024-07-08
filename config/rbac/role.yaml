@@ -6,6 +6,12 @@ metadata:
   namespace: finops
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+- apiGroups:
   - finops.krateo.io
   resources:
   - configmanagervms

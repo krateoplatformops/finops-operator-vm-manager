@@ -44,25 +44,27 @@ spec:
                     properties:
                       action:
                         type: string
-                      clientId:
-                        type: string
-                      clientSecret:
-                        type: string
                       path:
                         type: string
                       resourceDelta:
                         type: integer
-                      tenantId:
-                        type: string
                       token:
                         type: string
+                      tokenRef:
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        required:
+                        - name
+                        - namespace
+                        type: object
                     required:
                     - action
-                    - clientId
-                    - clientSecret
                     - path
                     - resourceDelta
-                    - tenantId
+                    - tokenRef
                     type: object
                 type: object
               resourceProvider:
