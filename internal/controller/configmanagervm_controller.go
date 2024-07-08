@@ -36,6 +36,7 @@ type ConfigManagerVMReconciler struct {
 //+kubebuilder:rbac:groups=finops.krateo.io,namespace=finops,resources=configmanagervms,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=finops.krateo.io,namespace=finops,resources=configmanagervms/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=finops.krateo.io,namespace=finops,resources=configmanagervms/finalizers,verbs=update
+//+kubebuilder:rbac:groups=core,namespace=finops,resources=secrets,verbs=get
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -62,6 +63,10 @@ func (r *ConfigManagerVMReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 	switch configManagerVM.Spec.ResourceProvider {
 	case "azure":
+		err = configManagerVM.Spec.ProviderSpecificResources.AzureLogin.Connect()
+		if err != nil {
+			return ctrl.Result{}, err
+		}
 		err = configManagerVM.Spec.ProviderSpecificResources.AzureLogin.SetResourceStatus()
 		if err != nil {
 			return ctrl.Result{}, err

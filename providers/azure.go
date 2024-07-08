@@ -36,11 +36,12 @@ func (c *Azure) Connect() error {
 		return err
 	}
 
-	data, err := clientset.CoreV1().Secrets(c.TokenRef.Namespace).Get(context.TODO(), c.TokenRef.Name, v1.GetOptions{})
+	secret, err := clientset.CoreV1().Secrets(c.TokenRef.Namespace).Get(context.TODO(), c.TokenRef.Name, v1.GetOptions{})
 	if err != nil {
 		return err
 	}
-	c.Token = string(data.Data["bearer-token"])
+
+	c.Token = string(secret.Data["bearer-token"])
 	return nil
 }
 
@@ -166,7 +167,7 @@ func (c *Azure) doRequest(req *http.Request) (*http.Response, error) {
 		return nil, err
 	}
 	if resp.StatusCode != 200 && resp.StatusCode != 202 {
-		return nil, errors.New("CloudError: " + strconv.FormatInt(int64(resp.StatusCode), 10) + " - Error: " + resp.Status)
+		return nil, errors.New("CloudError: " + strconv.FormatInt(int64(resp.StatusCode), 10) + " - Error: " + resp.Status + " - Token: " + c.Token)
 	}
 	return resp, nil
 }
