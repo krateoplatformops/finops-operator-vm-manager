@@ -1,0 +1,16 @@
+apiVersion: finops.krateo.io/v1
+kind: ConfigManagerVM
+metadata:
+  name: configmanagervm-sample
+  namespace: finops
+spec:
+  resourceProvider: azure
+  providerSpecificResources:
+    azure:
+      Token: 
+        name: azure-secret
+        namespace: finops
+      # resource path in azure, e.g.:
+      path: /subscriptions/SUBSCRIPTION_ID/resourcegroups/FinOps/providers/Microsoft.Compute/virtualMachines/VIRTUAL_MACHINE_NAME
+      resourceDelta: # int
+      action: # start; stop; deallocate; scale-up; scale-down
