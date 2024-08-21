@@ -1,8 +1,8 @@
 apiVersion: finops.krateo.io/v1
 kind: ConfigManagerVM
 metadata:
-  name: configmanagervm-sample
-  namespace: finops
+  name: # ConfigManagerVM name
+  namespace: # ConfigManagerVM namespace
 spec:
   resourceProvider: azure
   providerSpecificResources:
